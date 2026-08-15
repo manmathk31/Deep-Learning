@@ -92,6 +92,11 @@ flowchart LR
         o3((Virginica))
     end
     Input --> Hidden --> Output
+
+    classDef nodeStyle fill:#dbe4f7,stroke:#3E5C9A,stroke-width:2px,color:#1c2a44;
+    classDef subgraphStyle fill:#f7f9fd,stroke:#c7d2e8,stroke-width:1.5px,color:#1c2a44;
+    class i1,i2,i3,i4,h1,h2,h3,h4,h5,h6,h7,h8,o1,o2,o3 nodeStyle;
+    class Input,Hidden,Output subgraphStyle;
 ```
 
 | Layer | Neurons | Activation | Role |
@@ -174,6 +179,13 @@ flowchart TD
     J -- No --> K([Trained model])
     K --> L[Evaluate on test set]
     L --> M[Visualize results]
+
+    classDef stepStyle fill:#dbe4f7,stroke:#3E5C9A,stroke-width:2px,color:#1c2a44;
+    classDef endpointStyle fill:#c9d6f0,stroke:#3E5C9A,stroke-width:2px,color:#1c2a44;
+    classDef decisionStyle fill:#eef2fb,stroke:#3E5C9A,stroke-width:2px,color:#1c2a44;
+    class A,K endpointStyle;
+    class B,C,D,E,F,G,H,I,L,M stepStyle;
+    class J decisionStyle;
 ```
 
 ### Sequence of one training epoch
@@ -195,21 +207,23 @@ flowchart TD
   'fontFamily': 'Segoe UI, sans-serif'
 }}}%%
 sequenceDiagram
-    participant Loop as Training Loop
+    participant Trainer as Training Loop
     participant FP as forward_propagation()
     participant Loss as compute_loss()
     participant BP as backward_propagation()
-    participant Opt as update_parameters()
+    participant Upd as update_parameters()
 
-    Loop->>FP: X_train, params
-    FP-->>Loop: Y_hat, cache
-    Loop->>Loss: Y_train, Y_hat
-    Loss-->>Loop: loss value
-    Loop->>BP: X_train, Y_train, params, cache
-    BP-->>Loop: gradients
-    Loop->>Opt: params, gradients, learning_rate
-    Opt-->>Loop: updated params
-    Note over Loop: repeat for 1500 epochs
+    rect rgb(238, 242, 251)
+    Trainer->>FP: X_train, params
+    FP-->>Trainer: Y_hat, cache
+    Trainer->>Loss: Y_train, Y_hat
+    Loss-->>Trainer: loss value
+    Trainer->>BP: X_train, Y_train, params, cache
+    BP-->>Trainer: gradients
+    Trainer->>Upd: params, gradients, learning_rate
+    Upd-->>Trainer: updated params
+    end
+    Note over Trainer: repeat for 1500 epochs
 ```
 
 ---
@@ -276,6 +290,9 @@ classDiagram
     ForwardPass --> ParameterInit : uses W1, b1, W2, b2
     Backpropagation --> Activations : uses relu_derivative
     Preprocessing --> TrainingLoop : supplies train/test data
+
+    classDef moduleStyle fill:#dbe4f7,stroke:#3E5C9A,stroke-width:2px,color:#1c2a44;
+    cssClass "Preprocessing,Activations,ParameterInit,ForwardPass,LossMetrics,Backpropagation,Optimizer,TrainingLoop" moduleStyle
 ```
 
 | Module | Responsibility |
